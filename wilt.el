@@ -78,11 +78,25 @@
 
 (defun wilt--mode-line-status-text ()
   "Get text for the mode line."
-  (format "WILT: %s" (wilt-calculate-wilt)))
+  (format "WILT: %.2f" wilt--current))
+
+(defun wilt--on-save ()
+  "Hook run after a save."
+  (setq wilt--current (wilt-calculate-wilt)))
+
+(defconst wilt-hooks-alist
+  '((after-save-hook . wilt--on-save))
+  "Hooks which wilt hooks into.")
+
+(defvar-local wilt--current 0
+  "The most recently calculated WILT value for a buffer.")
 
 ;;;###autoload
 (define-minor-mode wilt-mode
   "Minor mode for calculating WILT metrics on your code.
+
+Just displays WILT metric in status line whenever a new line
+entered.
 
 When called interactively, toggle `wilt-mode'.  With prefix ARG,
 enable `wilt-mode' if ARG is positive, otherwise disable it.
@@ -95,6 +109,13 @@ Otherwise behave as if called interactively.
   :init-value nil
   :lighter (:eval (wilt--mode-line-status-text))
   :group 'wilt
-  :require 'wilt)
+  :require 'wilt
+  (cond
+   (wilt-mode
+    (dolist (hook wilt-hooks-alist)
+      (add-hook (car hook) (cdr hook) nil 'local)))
+   (t
+    (dolist (hook wilt-hooks-alist)
+      (remove-hook (car hook) (cdr hook) 'local)))))
 
 ;;; wilt.el ends here
