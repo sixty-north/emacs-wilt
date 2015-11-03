@@ -43,6 +43,9 @@
 (require 'dash)
 (require 's)
 
+(defvar-local wilt--current 0
+  "The most recently calculated WILT value for a buffer.")
+
 (defun wilt--count-leading-whitespace (line)
   "Count the leading whitespace in LINE."
   (string-match "^\\([[:space:]]*\\).*$" line)
@@ -78,25 +81,26 @@
 
 (defun wilt--mode-line-status-text ()
   "Get text for the mode line."
-  (format "WILT: %.2f" wilt--current))
+  (format " WILT: %.2f" wilt--current))
+
+(defun wilt--update-current ()
+  "Update the current WILT calculation."
+  (setq wilt--current (wilt-calculate-wilt))
 
 (defun wilt--on-save ()
   "Hook run after a save."
-  (setq wilt--current (wilt-calculate-wilt)))
+  (wilt--update-current)))
 
 (defconst wilt-hooks-alist
   '((after-save-hook . wilt--on-save))
   "Hooks which wilt hooks into.")
 
-(defvar-local wilt--current 0
-  "The most recently calculated WILT value for a buffer.")
-
 ;;;###autoload
 (define-minor-mode wilt-mode
   "Minor mode for calculating WILT metrics on your code.
 
-Just displays WILT metric in status line whenever a new line
-entered.
+Just displays WILT metric in status line whenever it's configured
+to do so.
 
 When called interactively, toggle `wilt-mode'.  With prefix ARG,
 enable `wilt-mode' if ARG is positive, otherwise disable it.
@@ -110,6 +114,7 @@ Otherwise behave as if called interactively.
   :lighter (:eval (wilt--mode-line-status-text))
   :group 'wilt
   :require 'wilt
+  :after-hook (wilt--update-current)
   (cond
    (wilt-mode
     (dolist (hook wilt-hooks-alist)
