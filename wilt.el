@@ -64,16 +64,16 @@
   (let* ((lines (-remove 'string-empty-p (wilt--buffer-lines))))
     (mapcar 'wilt--count-leading-whitespace lines)))
 
-(defun wilt-calculate-buffer ()
-  "TODO."
+;; TODO: Take buffer as argument
+(defun wilt-calculate-wilt ()
+  "Calculate WILT for the current buffer."
+  (let* ((ws (wilt--leading-whitespaces))
+	 (total-ws (-sum ws)))
+    (/ (float total-ws) (length ws))))
+
+(defun wilt-display-wilt ()
+  "Show WILT in the message buffer."
   (interactive)
-  (save-excursion
-    (beginning-of-buffer)
-    (dotimes (lineno (count-lines (buffer-end 0) (buffer-end 1)))
-      (let ((lineno (+ 1 lineno)))
-	(message
-	 (buffer-substring
-	  (line-beginning-position lineno)
-	  (line-end-position lineno)))))))
+  (message "%s" (wilt-calculate-wilt)))
 
 ;;; wilt.el ends here
