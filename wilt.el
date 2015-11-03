@@ -76,4 +76,25 @@
   (interactive)
   (message "%s" (wilt-calculate-wilt)))
 
+(defun wilt--mode-line-status-text ()
+  "Get text for the mode line."
+  (format "WILT: %s" (wilt-calculate-wilt)))
+
+;;;###autoload
+(define-minor-mode wilt-mode
+  "Minor mode for calculating WILT metrics on your code.
+
+When called interactively, toggle `wilt-mode'.  With prefix ARG,
+enable `wilt-mode' if ARG is positive, otherwise disable it.
+
+When called from Lisp, enable `wilt-mode' if ARG is omitted,
+nil or positive.  If ARG is `toggle', toggle `wilt-mode'.
+Otherwise behave as if called interactively.
+
+\\{wilt-mode-map}"
+  :init-value nil
+  :lighter (:eval (wilt--mode-line-status-text))
+  :group 'wilt
+  :require 'wilt)
+
 ;;; wilt.el ends here
