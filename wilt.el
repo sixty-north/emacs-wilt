@@ -174,4 +174,6 @@ Otherwise behave as if called interactively.
     (dolist (hook wilt-hooks-alist)
       (remove-hook (car hook) (cdr hook) 'local)))))
 
+(provide 'wilt)
+
 ;;; wilt.el ends here
