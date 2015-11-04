@@ -119,8 +119,11 @@ buffer."
 (defun wilt-calculate-wilt ()
   "Calculate WILT for the current buffer."
   (let* ((ws (wilt--leading-whitespaces))
-	 (total-ws (-sum ws)))
-    (/ (float total-ws) (length ws))))
+	 (total-ws (-sum ws))
+	 (count (length ws)))
+    (if (= count 0)
+	0.0
+      (/ (float total-ws) (length ws)))))
 
 (defun wilt-display-wilt ()
   "Show WILT in the message buffer."
