@@ -46,7 +46,6 @@
 (defvar-local wilt--current 0
   "The most recently calculated WILT value for a buffer.")
 
-;; TODO: Surely there's a more idiomatic way to do this.
 (defun wilt--line-length ()
   "Calculate length of current line."
   (save-excursion
@@ -80,7 +79,6 @@ buffer."
   	(forward-line 1)))
     counts))
 
-;; TODO: Take buffer as argument
 (defun wilt-calculate-wilt ()
   "Calculate WILT for the current buffer."
   (let* ((ws (wilt--leading-whitespaces))
