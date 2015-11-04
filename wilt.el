@@ -96,9 +96,7 @@ conditions.
 
 (defun wilt--count-whitespace ()
   "Count the leading whitespace in the current line."
-  (save-excursion
-    (forward-to-indentation 0)
-    (- (point) (line-beginning-position))))
+  (current-indentation))
 
 (defun wilt--leading-whitespaces ()
   "Return a list of leading whitespaces in a buffer.
