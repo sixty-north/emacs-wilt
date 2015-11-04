@@ -43,8 +43,15 @@
 (require 'dash)
 (require 's)
 
-(defvar-local wilt--current 0
-  "The most recently calculated WILT value for a buffer.")
+(defcustom wilt-mode-line-template "[WILT %.2f]"
+  "The template used to render WILT in the mode line.
+
+This string will be used as a format string, and the only
+argument passed to the template will be the current wilt value (a
+floating point number)."
+  :group 'wilt
+  :type '(string)
+  :safe #'stringp)
 
 (defcustom wilt-update-conditions '(save new-line mode-enabled)
   "When the WILT metric should be recalculated for a buffer.
@@ -79,6 +86,9 @@ conditions.
 "
   (if (memq condition wilt-update-conditions)
       (wilt--update-current)))
+
+(defvar-local wilt--current 0
+  "The most recently calculated WILT value for a buffer.")
 
 (defun wilt--line-length ()
   "Calculate length of current line."
@@ -130,7 +140,7 @@ buffer."
 
 (defun wilt--mode-line-status-text ()
   "Get text for the mode line."
-  (format " WILT: %.2f" wilt--current))
+  (format wilt-mode-line-template wilt--current))
 
 (defun wilt--update-current ()
   "Update the current WILT calculation."
