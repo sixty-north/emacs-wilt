@@ -53,9 +53,72 @@
 (require 'f)
 (require 'wilt)
 
-(ert-deftest wilt-test-example ()
-  "A dummy test."
-  (should (= 1 1)))
+(ert-deftest wilt-test-line-length-with-content ()
+  "Length of line with actual content."
+  (with-temp-buffer
+    (insert "asdfasdf\n")
+    (forward-line -1)
+    (should (= (wilt--line-length) 8))))
+
+(ert-deftest wilt-test-line-length-empty-line ()
+  "Length of line with no content."
+  (with-temp-buffer
+    (should (= (wilt--line-length) 0))))
+
+(ert-deftest wilt-test-count-whitespace-none ()
+  "Unindented lines should have no leading whitespace."
+  (with-temp-buffer
+    (insert "asdf")
+    (should (= (wilt--count-whitespace) 0))))
+
+(ert-deftest wilt-test-count-whitespace-some ()
+  "Indnted lines should have some leading whitespace."
+  (with-temp-buffer
+    (insert "    asdf")
+    (should (= (wilt--count-whitespace) 4))))
+
+(ert-deftest wilt-test-leading-whitespaces-only-empty-lines ()
+  (with-temp-buffer
+    (insert "\n")
+    (insert "\n")
+    (insert "\n")
+    (should (equal (wilt--leading-whitespaces) '()))))
+
+(ert-deftest wilt-test-leading-whitespaces-only-unindented-lines ()
+  (with-temp-buffer
+    (insert "asdf\n")
+    (insert "qwer\n")
+    (insert "zxcv\n")
+    (should (equal (wilt--leading-whitespaces) '(0 0 0)))))
+
+(ert-deftest wilt-test-leading-whitespaces-some-indented-lines ()
+  (with-temp-buffer
+    (insert "  asdf\n")
+    (insert "qwer\n")
+    (insert "    zxcv\n")
+    (insert " llamas")
+    (should (equal (wilt--leading-whitespaces) (reverse '(2 0 4 1))))))
+
+(ert-deftest wilt-test-calculate-wilt-empty-buffer ()
+  (with-temp-buffer
+    (should (= (wilt-calculate-wilt) 0.0))))
+
+(ert-deftest wilt-test-calculate-wilt-no-indentation ()
+  (with-temp-buffer
+    (insert "I\n")
+    (insert "am\n")
+    (insert "not\n")
+    (insert "a\n")
+    (insert "number!\n")
+    (should (= (wilt-calculate-wilt) 0.0))))
+
+(ert-deftest wilt-test-calculate-wilt-some-indentation ()
+  (with-temp-buffer
+    (insert "I\n")
+    (insert " am\n")
+    (insert "      a\n")
+    (insert "  number!\n")
+    (should (= (wilt-calculate-wilt) 2.25))))
 
 (provide 'wilt-test)
 
