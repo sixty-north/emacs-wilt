@@ -46,6 +46,40 @@
 (defvar-local wilt--current 0
   "The most recently calculated WILT value for a buffer.")
 
+(defcustom wilt-update-conditions '(save new-line mode-enabled)
+  "When the WILT metric should be recalculated for a buffer.
+
+The variable is a list of events that may trigger parsing the
+buffer for new completion:
+
+`save'
+      Set buffer-needs-parse flag after the buffer was saved.
+
+`new-line'
+      Set buffer-needs-parse flag immediately after a new
+      line was inserted into the buffer.
+
+`mode-enabled'
+      Set buffer-needs-parse flag after `wilt-mode' has been
+      enabled.
+
+If nil, never automatically recalculate WILT."
+
+  :group 'wilt
+  :type '(set (const :tag "After the buffer was saved" save)
+              (const :tag "After a new line was inserted" new-line)
+              (const :tag "After `wilt-mode' was enabled" mode-enabled))
+  :safe #'listp)
+
+(defun wilt--conditional-update (condition)
+  "Update the WILT if CONDITION is configured for update.
+
+See `wilt-update-conditions' for more information on update
+conditions.
+"
+  (if (memq condition wilt-update-conditions)
+      (wilt--update-current)))
+
 (defun wilt--line-length ()
   "Calculate length of current line."
   (save-excursion
@@ -96,14 +130,21 @@ buffer."
 
 (defun wilt--update-current ()
   "Update the current WILT calculation."
+  (message "UPDATING WILT")
   (setq wilt--current (wilt-calculate-wilt))
 
 (defun wilt--on-save ()
   "Hook run after a save."
-  (wilt--update-current)))
+  (wilt--conditional-update 'save)))
+
+(defun wilt--on-command ()
+  "Hook run after a command is executed."
+  (if (eq this-command 'newline)
+      (wilt--conditional-update 'new-line)))
 
 (defconst wilt-hooks-alist
-  '((after-save-hook . wilt--on-save))
+  '((after-save-hook . wilt--on-save)
+    (post-command-hook . wilt--on-command))
   "Hooks which wilt hooks into.")
 
 ;;;###autoload
@@ -125,7 +166,7 @@ Otherwise behave as if called interactively.
   :lighter (:eval (wilt--mode-line-status-text))
   :group 'wilt
   :require 'wilt
-  :after-hook (wilt--update-current)
+  :after-hook (wilt--conditional-update 'mode-enabled)
   (cond
    (wilt-mode
     (dolist (hook wilt-hooks-alist)
