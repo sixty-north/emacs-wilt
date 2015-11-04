@@ -120,6 +120,16 @@
     (insert "  number!\n")
     (should (= (wilt-calculate-wilt) 2.25))))
 
+(ert-deftest wilt-test-status-text ()
+  (let ((wilt-mode-line-template "llamas %.2f")
+	(wilt--current 1.2345))
+    (should (equal (wilt--mode-line-status-text) "llamas 1.23")))
+  (let ((wilt-mode-line-template "[%s]")
+	(wilt--current 2.34567))
+    (should (equal (wilt--mode-line-status-text) "[2.34567]"))))
+
+;; TODO: Tests for hooks and update conditions?
+
 (provide 'wilt-test)
 
 ;;; wilt-test.el ends here
