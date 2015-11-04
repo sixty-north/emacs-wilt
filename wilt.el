@@ -102,6 +102,10 @@ conditions.
 (defun wilt--leading-whitespaces ()
   "Return a list of leading whitespaces in a buffer.
 
+Empty lines are not included in this calculation, so you will
+often have more lines in a buffer than entries in this return
+value.
+
 Note that this list is reversed relative to the lines in the
 buffer."
   (let ((counts '()))
