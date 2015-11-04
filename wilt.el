@@ -1,11 +1,11 @@
-;;; wilt.el -- An extensions for calculating WILT in a buffer.
+;;; wilt.el --- An extensions for calculating WILT in a buffer.
 ;;
 ;; Copyright (c) 2015 Austin Bingham
 ;;
 ;; Author: Austin Bingham <austin@sixty-north.com>
 ;; Version: 0.1
 ;; URL: https://github.com/sixty-north/emacs-wilt
-;; Package-Requires: ((dash "X.Y.Z") (s "X.Y.Z"))
+;; Package-Requires: ((emacs "24.3") (dash "2.12.0") (s "1.10.0"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
