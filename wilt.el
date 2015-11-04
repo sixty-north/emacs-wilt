@@ -46,26 +46,39 @@
 (defvar-local wilt--current 0
   "The most recently calculated WILT value for a buffer.")
 
-(defun wilt--count-leading-whitespace (line)
-  "Count the leading whitespace in LINE."
-  (string-match "^\\([[:space:]]*\\).*$" line)
-  (length (match-string 1 line)))
-
-(defun wilt--buffer-lines ()
-  "Get list of lines in buffer."
+;; TODO: Surely there's a more idiomatic way to do this.
+(defun wilt--line-length ()
+  "Calculate length of current line."
   (save-excursion
-    (goto-char (point-min))
-    (mapcar
-     (lambda (lineno)
-       (let* ((start-pos (line-beginning-position lineno))
-	      (stop-pos (line-end-position lineno)))
-	 (buffer-substring start-pos stop-pos)))
-     (number-sequence 1 (count-lines (buffer-end 0) (buffer-end 1))))))
+    (-
+     (progn
+       (end-of-line)
+       (current-column))
+     (progn
+       (beginning-of-line)
+       (current-column)))))
+
+(defun wilt--count-whitespace ()
+  "Count the leading whitespace in the current line."
+  (save-excursion
+    (beginning-of-line)
+    (let ((start-col (current-column)))
+      (forward-to-indentation 0)
+      (- (current-column) start-col))))
 
 (defun wilt--leading-whitespaces ()
-  "TODO."
-  (let* ((lines (-remove 'string-empty-p (wilt--buffer-lines))))
-    (mapcar 'wilt--count-leading-whitespace lines)))
+  "Return a list of leading whitespaces in a buffer.
+
+Note that this list is reversed relative to the lines in the
+buffer."
+  (let ((counts '()))
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+	(if (> (wilt--line-length) 0)
+	  (setq counts (cons (wilt--count-whitespace) counts)))
+  	(forward-line 1)))
+    counts))
 
 ;; TODO: Take buffer as argument
 (defun wilt-calculate-wilt ()
