@@ -1,4 +1,4 @@
-;;; wilt.el -- An extensions for calculating WILT in a buffer.
+;;; wilt.el --- An extensions for calculating WILT in a buffer.
 ;;
 ;; Copyright (c) 2015 Austin Bingham
 ;;
