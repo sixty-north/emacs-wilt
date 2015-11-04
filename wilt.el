@@ -82,22 +82,11 @@ conditions.
 
 (defun wilt--line-length ()
   "Calculate length of current line."
-  (save-excursion
-    (-
-     (progn
-       (end-of-line)
-       (current-column))
-     (progn
-       (beginning-of-line)
-       (current-column)))))
+  (- (line-end-position) (line-beginning-position)))
 
 (defun wilt--count-whitespace ()
   "Count the leading whitespace in the current line."
-  (save-excursion
-    (beginning-of-line)
-    (let ((start-col (current-column)))
-      (forward-to-indentation 0)
-      (- (current-column) start-col))))
+  (current-indentation))
 
 (defun wilt--leading-whitespaces ()
   "Return a list of leading whitespaces in a buffer.
