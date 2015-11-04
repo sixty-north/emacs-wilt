@@ -15,6 +15,16 @@ it in the status line.
 
 ![Screenshot](https://raw.github.com/sixty-north/emacs-wilt/master/screenshot.png)
 
+## Installation and setup
+
+This simplest way to install `wilt-mode` is through
+[MELPA](https://melpa.org/). If MELPA is one of your package archives,
+install using `package`:
+
+```
+M-x package-install wilt
+```
+
 To use this extension, first require the extension:
 
 ```
@@ -26,3 +36,27 @@ Then go to the buffer in which you want to calculate WILT and run:
 ```
 M-x wilt-mode
 ```
+
+## Customization
+
+`wilt-mode` can be customized in a number of ways through the standard
+Emacs customization machinery.
+
+### Changing the mode-line display
+
+You can control how WILT is displayed in your mode-line through the
+`wilt-mode-line-template` variable. This is a string that is used as a
+formatting template. When display is necessary, the current WILT value
+(a floating point number) is passed to this template, and the
+interpolated result is displayed.
+
+For example, to display WILT like `W=1.23`, you would use a value of
+`"W=%.2f"`.
+
+### Controlling when WILT is recalculated
+
+By default WILT is calculated when you enter the mode, when a newline
+is entered, and when the buffer is saved. You can change this behavior
+by customizing the `wilt-update-conditions` variable. This is simply a
+list of atoms which indicate the conditions under which WILT should
+ber recalculated.
