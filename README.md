@@ -12,3 +12,9 @@ the benefit of being *far* easier to calculate.
 This extension provides the `wilt-mode` minor mode for emacs. This
 mode will occassionally recalculate the WILT for a buffer and display
 it in the status line.
+
+To use this extension, go to the buffer in which you want to calculate
+WILT and run:
+```
+M-x wilt-mode
+```
