@@ -130,7 +130,6 @@ buffer."
 
 (defun wilt--update-current ()
   "Update the current WILT calculation."
-  (message "UPDATING WILT")
   (setq wilt--current (wilt-calculate-wilt))
 
 (defun wilt--on-save ()
