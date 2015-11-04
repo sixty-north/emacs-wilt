@@ -13,6 +13,8 @@ This extension provides the `wilt-mode` minor mode for emacs. This
 mode will occassionally recalculate the WILT for a buffer and display
 it in the status line.
 
+![Screenshot](https://raw.github.com/sixty-north/emacs-wilt/master/screenshot.png)
+
 To use this extension, first require the extension:
 
 ```
